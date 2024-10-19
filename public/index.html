@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralized Memes</title>
+  </head>
+  <body>
+    <h1>Decentralized Memes</h1>
+
+    <form action="/submit" method="POST">
+      <label for="meme_url">Submit Meme URL:</label>
+      <input type="text" name="meme_url" required>
+      <button type="submit">Submit Meme</button>
+    </form>
+
+    <form action="/upvote" method="POST">
+      <label for="meme_id">Upvote Meme ID:</label>
+      <input type="number" name="meme_id" required>
+      <button type="submit">Upvote Meme</button>
+    </form>
+
+    <button id="randomMemeBtn">Random Meme</button>
+    <div id="randomMemeResult"></div>
+
+    <script>
+      document.getElementById('randomMemeBtn').addEventListener('click', async () => {
+          const response = await fetch('/random');
+          const data = await response.json();
+          document.getElementById('randomMemeResult').innerHTML = `<img src="${data.memeUrl}" alt="Random Meme" />`;
+      });
+    </script>
+  </body>
+</html>

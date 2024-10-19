@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract MemeGenerator {
+  struct Meme {
+    string memeURL;
+    address submitter;
+    uint upvotes;
+  }
+
+  Meme[] public memes;
+  mapping(address => uint) public tokenBalance;
+
+  event MemeSubmitted(uint memeId, string memeURL, address submitter);
+  event MemeUpvoted(uint memeId, uint upvotes, address upvoter);
+
+  function submitMeme(string memory memeURL) public {
+    memes.push(Meme(memeURL, msg.sender, 0));
+    emit MemeSubmitted(memes.length - 1, memeURL, msg.sender);
+  }
+
+  function upvoteMeme(uint memeId) public {
+    require(memeId < memes.length, "Invalid meme ID");
+    memes[memeId].upvotes++;
+    tokenBalance[memes[memeId].submitter]++;
+    emit MemeUpvoted(memeId, memes[memeId].upvotes, msg.sender);
+  }
+
+  function getMeme(uint memeId) public view returns (string memory, uint) {
+    return (memes[memeId].memeURL, memes[memeId].upvotes);
+  }
+
+  function randomMeme() public view returns (string memory) {
+    uint randomId = uint(keccak256(abi.encodePacked(block.timestamp, block.difficulty))) % memes.length;
+    return memes[randomId].memeURL;
+  }
+
+  function tokenBalanceOf(address user) public view returns (uint) {
+    return tokenBalance[user];
+  }
+}
